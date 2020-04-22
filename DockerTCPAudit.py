@@ -3,7 +3,7 @@
 import docker
 from concurrent.futures import ThreadPoolExecutor
 
-stdout = '{:<15s} : {:<30s}'
+stdout = '{:<20s} : {:<40s}'
 
 def getNetworks(client):
     networks = client.networks.list()
@@ -27,6 +27,7 @@ def parsePorts(ports):
 
 def Display(result):
     for i in result:
+        print()
         print(stdout.format('Network', i['network']))
         print(stdout.format('Source', i['source'].name))
         print(stdout.format('Destination', i['destination'].name))
@@ -34,7 +35,6 @@ def Display(result):
         print(stdout.format('Destination IP', i['destination'].attrs['NetworkSettings']['Networks'][i['network']]['IPAddress']))
         print(stdout.format('Port', i['port']))
         print(stdout.format('Result', i['result']))
-        print()
 
 def Product(containers, networks):
     product = []
@@ -79,10 +79,13 @@ def Netcat(product):
 if __name__ == '__main__':
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     n = getNetworks(client)
+    print(stdout.format('Total Networks', str(len(n))))
     c = getContainers(client)
+    print(stdout.format('Total Containers', str(len(c))))
     product = Product(c, n)
+    print(stdout.format('Total TCP Checks', str(len(product))))
     res = []
-    with ThreadPoolExecutor(max_workers=20) as executor:
+    with ThreadPoolExecutor(max_workers=30) as executor:
         for i in executor.map(TCPAudit, product):
             if i:
                 res.append(i)
