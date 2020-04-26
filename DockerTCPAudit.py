@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 #coding: utf-8
 import docker
 from concurrent.futures import ThreadPoolExecutor
