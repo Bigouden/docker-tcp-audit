@@ -42,7 +42,6 @@ def Product(containers, networks):
         if not container.ports:
             continue
         container_ports = parsePorts(container.ports.keys())
-        container_networks = sorted(container.attrs['NetworkSettings']['Networks'])
         for container_network in sorted(container.attrs['NetworkSettings']['Networks']):
             for connect_container in list(filter(lambda networks: networks['name'] == container_network, networks))[0]['containers']:
                 if connect_container == container:
